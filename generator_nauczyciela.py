@@ -26,7 +26,7 @@ def separate_value_to_list(lines):
         student_data = line.strip().split(",")
         print(student_data)
         imie_nazwisko = student_data[1] + " " + student_data[2]
-        imiona_nazwiska.append(imie_nazwisko)
+        imiona_nazwiska.append(imie_nazwisko.title())
         zadania.append(student_data[3])
         ocena.append(student_data[4])
     print(imiona_nazwiska)
@@ -61,13 +61,25 @@ submit before you can graduate. You're current grade is {} and can increase \n\
 to {} if you submit all assignments before the due date {}.\n\n"
     return message
 
+def read_message_template(filename):
+    try:
+        with open(filename) as f:
+            template = f.read()
+            print(template)
+    except FileNotFoundError:
+        print("File ", filename, " is not found. Returning default message template.")
+        return get_message_template()
+    return template
 
 def main():
-    lines_file = read_file_csv("student.csv")
-    names, tasks, grades = separate_value_to_list(lines_file)
-    generate_message(get_message_template(),names, tasks, grades, get_due_date())
-
-
+    student_data_file = 'student.csv'
+    message_template_file = 'messagej.txt'
+    try:
+        lines_file = read_file_csv(student_data_file)
+        names, tasks, grades = separate_value_to_list(lines_file)
+        generate_message(read_message_template(message_template_file), names, tasks, grades, get_due_date())
+    except FileNotFoundError:
+        print("File ", student_data_file, " is not found. Terminating program.")
 
 
 if __name__ == '__main__':
